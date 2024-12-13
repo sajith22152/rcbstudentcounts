@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="si">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>පන්ති කළමනාකරණය</title>
+    <style>
+        :root {
+            --primary-color: #4f46e5;
+            --danger-color: #dc2626;
+            --success-color: #16a34a;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f3f4f6;
+            min-height: 100vh;
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            transition: transform 0.2s;
+        }
+
+        .card:hover {
+            transform: translateY(-2px);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .header h1 {
+            color: var(--primary-color);
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        @media (max-width: 768px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #374151;
+            font-weight: 500;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.2s;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.1);
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #4338ca;
+        }
+
+        .btn-danger {
+            background-color: var(--danger-color);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background-color: #b91c1c;
+        }
+
+        .btn-success {
+            background-color: var(--success-color);
+            color: white;
+        }
+
+        .btn-success:hover {
+            background-color: #15803d;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .table-container {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+
+        th, td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        th {
+            background-color: #f8fafc;
+            font-weight: 600;
+            color: #374151;
+        }
+
+        tr:hover {
+            background-color: #f8fafc;
+        }
+
+        .actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .notification {
+            position: fixed;
+            top: 1rem;
+            right: 1rem;
+            padding: 1rem;
+            border-radius: 8px;
+            background-color: #10b981;
+            color: white;
+            transform: translateX(150%);
+            transition: transform 0.3s;
+            z-index: 1000;
+        }
+
+        .notification.show {
+            transform: translateX(0);
+        }
+
+        .db-actions {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .file-input {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>පන්ති කළමනාකරණය</h1>
+        </div>
+
+        <div class="card">
+            <div class="form-grid">
+                <div class="form-group">
+                    <label for="className">පන්තියේ නම</label>
+                    <input type="text" id="className" class="form-control" placeholder="පන්තිය ඇතුලත් කරන්න">
+                </div>
+                <div class="form-group">
+                    <label for="studentCount">සිසුන් ගණන</label>
+                    <input type="number" id="studentCount" class="form-control" placeholder="සිසුන් ගණන ඇතුලත් කරන්න">
+                </div>
+            </div>
+            <button onclick="addClass()" class="btn btn-primary">පන්තිය එකතු කරන්න</button>
+        </div>
+
+        <div class="card">
+            <h2>පන්ති ලැයිස්තුව</h2>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>පන්තිය</th>
+                            <th>සිසුන් ගණන</th>
+                            <th>ක්‍රියාමාර්ග</th>
+                        </tr>
+                    </thead>
+                    <tbody id="classTableBody"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="db-actions">
+            <button onclick="backupData()" class="btn btn-success">Backup</button>
+            <input type="file" id="restoreFile" accept=".json" class="file-input" onchange="restoreData(event)">
+            <label for="restoreFile" class="btn btn-primary">Restore</label>
+        </div>
+    </div>
+
+    <div id="notification" class="notification"></div>
+
+    <script>
+        let classData = [];
+
+        function showNotification(message) {
+            const notification = document.getElementById('notification');
+            notification.textContent = message;
+            notification.classList.add('show');
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+
+        function addClass() {
+            const className = document.getElementById('className').value;
+            const studentCount = document.getElementById('studentCount').value;
+
+            if (!className || !studentCount) {
+                showNotification('කරුණාකර සියලුම තොරතුරු ඇතුළත් කරන්න');
+                return;
+            }
+
+            const newClass = {
+                id: Date.now(),
+                name: className,
+                students: parseInt(studentCount)
+            };
+
+            classData.push(newClass);
+            updateTable();
+            clearForm();
+            showNotification('පන්තිය සාර්ථකව එකතු කරන ලදී');
+        }
+
+        function updateTable() {
+            const tbody = document.getElementById('classTableBody');
+            tbody.innerHTML = '';
+
+            classData.forEach(cls => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${cls.name}</td>
+                    <td>${cls.students}</td>
+                    <td class="actions">
+                        <button onclick="editClass(${cls.id})" class="btn btn-primary">වෙනස් කරන්න</button>
+                        <button onclick="deleteClass(${cls.id})" class="btn btn-danger">මකන්න</button>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        function clearForm() {
+            document.getElementById('className').value = '';
+            document.getElementById('studentCount').value = '';
+        }
+
+        function editClass(id) {
+            const cls = classData.find(c => c.id === id);
+            if (cls) {
+                const newName = prompt('නව පන්ති නම:', cls.name);
+                const newCount = prompt('නව සිසුන් ගණන:', cls.students);
+
+                if (newName && newCount) {
+                    cls.name = newName;
+                    cls.students = parseInt(newCount);
+                    updateTable();
+                    showNotification('පන්තිය සාර්ථකව යාවත්කාලීන කරන ලදී');
+                }
+            }
+        }
+
+        function deleteClass(id) {
+            if (confirm('ඔබට මෙම පන්තිය මකා දැමීමට අවශ්‍යද?')) {
+                classData = classData.filter(c => c.id !== id);
+                updateTable();
+                showNotification('පන්තිය සාර්ථකව මකා දමන ලදී');
+            }
+        }
+
+        function backupData() {
+            const dataStr = JSON.stringify(classData);
+            const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
+            const exportFileDefaultName = 'class_backup.json';
+
+            const linkElement = document.createElement('a');
+            linkElement.setAttribute('href', dataUri);
+            linkElement.setAttribute('download', exportFileDefaultName);
+            linkElement.click();
+            showNotification('දත්ත සාර්ථකව backup කරන ලදී');
+        }
+
+        function restoreData(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    try {
+                        const restoredData = JSON.parse(e.target.result);
+                        classData = restoredData;
+                        updateTable();
+                        showNotification('දත්ත සාර්ථකව ප්‍රතිස්ථාපනය කරන ලදී');
+                    } catch (error) {
+                        showNotification('දත්ත ප්‍රතිස්ථාපනය අසාර්ථකයි');
+                    }
+                };
+                reader.readAsText(file);
+            }
+        }
+    </script>
+</body>
+</html>
